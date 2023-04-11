@@ -15,6 +15,7 @@ app.post("/maps", (req, res) => {
         "city": req.body.city,
         "businessTypes": req.body.businessTypes
     }
+
     return res.json("maps create successful")
 })
 
@@ -26,6 +27,6 @@ app.delete("/maps/:id", (req, res) => {
     return res.json("maps delete successful")
 })
 
-app.listen(8800, ()=>{
+app.listen(8800, () => {
     console.log("Connected to server")
 })

@@ -1,0 +1,10 @@
+Client
+1. Retrieve CSV file containing business data
+2. Use Leaflet API to generate map
+3. Use Google Charts API to generate charts
+
+Backend
+1. Receive JSON payload containing city and businessType info
+2. Use free API to find boundaries of city
+3. Use Bing Maps API and write a CSV containing requested info
+4. Pass CSV to client
