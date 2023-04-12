@@ -1,5 +1,20 @@
+"""
+This module contains methods to assist with making requests for the Bing Maps
+Local Search API.
+
+Set the global variable API_KEY to supply an API key universally.
+
+Functions:
+    validate_types: validates API business type IDs
+    construct_request: constructs API request url
+    validate_request_parameters: validates construct_request parameters
+    parse_locations: generator that parses JSON data from an API response
+    search_grid: generator that splits a search region into an even grid
+"""
 from numpy import arange
 
+
+API_KEY = None
 
 type_identifiers = {
     'EatDrink': {
@@ -63,7 +78,8 @@ def validate_types(types):
                 found = True
                 break
 
-        if not found: return False
+        if not found:
+            return False
     return True
 
 
@@ -73,7 +89,7 @@ def construct_request(query=None,
                       userCircularMapView=None,
                       userLocation=None,
                       userMapView=None,
-                      key=None,
+                      key=API_KEY,
                       validate=False):
     """
     Constructs the URL for a Local Search API request given API parameters.
@@ -116,27 +132,33 @@ def construct_request(query=None,
         ValueError: if userMapView coordinates do not form a rectangle.
         ValueError: if key is not provided.
     """
-    if type(types) is str: types = types.split()
+    if type(types) is str:
+        types = types.split()
     if validate:
         validate_request_parameters(query, types, maxResults,
                                     userCircularMapView, userLocation,
                                     userMapView, key)
 
     url = f"https://dev.virtualearth.net/REST/v1/LocalSearch/?key={key}"
-    if query: url += f"&query={query.replace(' ', '%20')}"
-    if types: url += f"&type={','.join(types)}"
-    if maxResults: url += f"&maxResults={int(maxResults)}"
+    if query:
+        url += f"&query={query.replace(' ', '%20')}"
+    if types:
+        url += f"&type={','.join(types)}"
+    if maxResults:
+        url += f"&maxResults={int(maxResults)}"
     if userCircularMapView:
         url += (
             f"&userCircularMapView={','.join(map(str, userCircularMapView))}")
-    if userLocation: url += f"&userLocation={','.join(map(str, userLocation))}"
-    if userMapView: url += f"&userMapView={','.join(map(str, userMapView))}"
+    if userLocation:
+        url += f"&userLocation={','.join(map(str, userLocation))}"
+    if userMapView:
+        url += f"&userMapView={','.join(map(str, userMapView))}"
 
     return url
 
 
 def validate_request_parameters(query, types, maxResults, userCircularMapView,
-                                userLocation, userMapView, key):
+                                userLocation, userMapView, key=API_KEY):
     """
     Helper method to perform optional construct_request() parameter validation.
     Does not validate specfied data types.
@@ -212,7 +234,8 @@ def parse_locations(response, items=None):
     Raises:
         KeyError: if JSON dictionary is invalid.
     """
-    if items: items_split = tuple(tuple(item.split(".")) for item in items)
+    if items:
+        items_split = tuple(tuple(item.split(".")) for item in items)
     for location_dict in response['resourceSets'][0]['resources']:
         if not items:
             yield location_dict
@@ -222,9 +245,11 @@ def parse_locations(response, items=None):
                 try:
                     data_entry = location_dict[item_levels[0]]
                     for item_level in item_levels[1:]:
-                        if item_level.isdigit(): item_level = int(item_level)
+                        if item_level.isdigit():
+                            item_level = int(item_level)
                         data_entry = data_entry[item_level]
-                except KeyError: data_entry = None
+                except KeyError:
+                    data_entry = None
                 location_data.append(data_entry)
 
             yield location_data
