@@ -2,8 +2,6 @@
 This module contains methods to assist with making requests for the Bing Maps
 Local Search API.
 
-Set the global variable API_KEY to supply an API key universally.
-
 Functions:
     validate_types: validates API business type IDs
     construct_request: constructs API request url
@@ -13,8 +11,6 @@ Functions:
 """
 from numpy import arange
 
-
-API_KEY = None
 
 type_identifiers = {
     'EatDrink': {
@@ -89,7 +85,7 @@ def construct_request(query=None,
                       userCircularMapView=None,
                       userLocation=None,
                       userMapView=None,
-                      key=API_KEY,
+                      key=None,
                       validate=False):
     """
     Constructs the URL for a Local Search API request given API parameters.
@@ -158,7 +154,7 @@ def construct_request(query=None,
 
 
 def validate_request_parameters(query, types, maxResults, userCircularMapView,
-                                userLocation, userMapView, key=API_KEY):
+                                userLocation, userMapView, key=None):
     """
     Helper method to perform optional construct_request() parameter validation.
     Does not validate specfied data types.
