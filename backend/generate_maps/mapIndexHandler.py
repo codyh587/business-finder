@@ -17,6 +17,15 @@ Functions:
     create_index: creates a unique base-64 map id and entry in map_index.json
     delete_index: deletes an entry from map_index and its corresponding file
     update_index: updates an entry from map_index for attribute "title"
+
+When invoked directly, the following input values can be used to call
+delete_index and update_index:
+
+Input Values:
+    mode: string specifying "DELETE" or "UPDATE"
+    index_path: string representing the file path of map_index.json
+    map_id: string representing the base-64 unique identifier for the given map
+    new_title: string specifying the new value for attribute "title"
 """
 from json import dump, loads
 from os import remove
@@ -91,3 +100,16 @@ def update_index(index_path, map_id, new_title):
 
     with open(index_path, 'w') as index_file:
         dump(index, index_file)
+
+
+if __name__ == '__main__':
+    mode = input()
+    assert mode == 'DELETE' or mode == 'UPDATE'
+    index_path = input()
+    map_id = input()
+
+    if mode == 'DELETE':
+        delete_index(index_path, map_id)
+    elif mode == 'UPDATE':
+        new_title = input()
+        update_index(index_path, map_id, new_title)

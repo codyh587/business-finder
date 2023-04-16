@@ -307,5 +307,9 @@ def search_grid(coordinates, lat_partition, long_partition, set_size=False):
 
     for grid_lat in arange(sw_lat, ne_lat, lat_step):
         for grid_long in arange(sw_long, ne_long, long_step):
-            yield (grid_lat, grid_long, min(grid_lat + lat_step, ne_lat),
-                   min(grid_long + long_step, ne_long))
+            yield (
+                grid_lat,
+                grid_long,
+                min(grid_lat + lat_step, ne_lat),
+                min(grid_long + long_step, ne_long)
+            )
