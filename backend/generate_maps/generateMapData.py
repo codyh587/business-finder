@@ -26,9 +26,7 @@ nominatim_request = get(
 )
 bounding_box = nominatim_request.json()[0]['boundingbox']
 bounding_box[2], bounding_box[1] = bounding_box[1], bounding_box[2]
-# (30, -120, 50, -90)
 bounding_box = tuple(map(float, bounding_box))
-
 
 # Create asynchronous Bing Maps API request functions
 desired_attributes = ('name', 'point.coordinates', 'Address.formattedAddress',
@@ -72,17 +70,15 @@ async def retrieve_all():
         await gather(*tasks, return_exceptions=True)
 
 
-# TODO Create unique map filename
+# TODO Create map id and enter into map index
 map_index_path = f'{file_path}\maps\map_index.json'
-map_file_name = '1.json'
 map_file_name = create_index(map_index_path, title)
 
-
-# Create map data
+# Generate map data
 map_objects = []
 covered_addresses = set()
 with open(
-    f'{file_path}\maps\{map_file_name}', 'w', encoding='utf-8'
+    f'{file_path}\maps\{map_file_name}.json', 'w', encoding='utf-8'
 ) as map_file:
     run(retrieve_all())
     dump(
