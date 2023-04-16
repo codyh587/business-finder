@@ -1,3 +1,20 @@
+"""
+This module generates a JSON file containing location data for specified
+business types in a designated city (referred to as a map).
+
+Each map file is given a unique base-64 identifier and placed in the /maps
+directory. An entry for each map is also created in map_index.json for
+indexing purposes.
+
+Each map file contains an array of JSON objects with the following attributes:
+    "n": string representing the name for the retrieved business.
+    "c": a list of 2 floats specifying the coordinate location for the
+        retrieved business.
+    "a": string representing the address for the retrieved business.
+    "t": string representing the business type for the retrieved business.
+
+This module uses the Bing Maps API and Nominatim API.
+"""
 from asyncio import ensure_future, gather, run
 from aiohttp.client import ClientSession, TCPConnector
 from json import dump, loads
@@ -17,7 +34,6 @@ requested_types = ['Restaurants']
 file_path = dirname(__file__)
 with open(f'{file_path}\secrets.json', 'r') as secrets:
     bing_maps_api_key = loads(secrets.read())['bing_maps_api_key']
-
 
 # Retrieve city bounding box
 nominatim_request = get(
@@ -39,7 +55,7 @@ async def retrieve(url, session):
         for name, coordinates, address, business_type in parse_locations(
             results, desired_attributes
         ):
-            # TODO: Check and validate coordinate is inside the city
+            # TODO: Validate coordinates is inside the city
             map_object = {
                 'n': name,
                 'c': coordinates,
@@ -70,11 +86,11 @@ async def retrieve_all():
         await gather(*tasks, return_exceptions=True)
 
 
-# TODO Create map id and enter into map index
+# Create map id and entry in map index
 map_index_path = f'{file_path}\maps\map_index.json'
 map_file_name = create_index(map_index_path, title)
 
-# Generate map data
+# Generate and write map data
 map_objects = []
 covered_addresses = set()
 with open(
@@ -82,7 +98,7 @@ with open(
 ) as map_file:
     run(retrieve_all())
     dump(
-        {'data': map_objects},
+        map_objects,
         map_file,
         ensure_ascii=False
     )

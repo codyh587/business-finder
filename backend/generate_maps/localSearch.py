@@ -96,7 +96,7 @@ def construct_request(query=None,
         types: a list, tuple, or set of strings containing type IDs. Either
             query or types must be provided. Space separated string also
             supported.
-        maxResults: integer indicating the maximum amount of  results to
+        maxResults: integer indicating the maximum amount of results to
             retrieve (between 1-25).
         userCircularMapView: a list or tuple of 3 floats specifying the
             center location (latitude, longitude) and radius (m) of a circular

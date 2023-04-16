@@ -11,8 +11,9 @@ app.get("/maps", (req, res) => {
 
 app.post("/maps", (req, res) => {
     const values = {
-        "id": 0,
         "city": req.body.city,
+        "state": req.body.state,
+        "title": req.body.title,
         "businessTypes": req.body.businessTypes
     }
 
