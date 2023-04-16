@@ -82,7 +82,7 @@ async def retrieve_all():
     connector = TCPConnector(limit=4)
     async with ClientSession(connector=connector) as session:
         tasks = []
-        for grid in search_grid(bounding_box, 2, 2):
+        for grid in search_grid(bounding_box, 1, 1):
             for requested_type in requested_types:
                 url = construct_request(
                     types=requested_type,
@@ -108,7 +108,6 @@ with open(
     f'{file_path}\maps\{map_file_name}.json', 'w', encoding='utf-8'
 ) as map_file:
     print("Map file created")
-    # TODO async functions don't work when invoked by index.js
     run(retrieve_all())
     print("Async requests completed")
     dump(

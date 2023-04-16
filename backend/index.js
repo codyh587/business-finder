@@ -26,7 +26,6 @@ app.get("/maps/:id", (req, res) => {
     res.sendFile(path.join(__dirname, 'generate_maps', 'maps', mapId + '.json'))
 })
 
-// TODO async function in python file doesn't work when invoked by this
 // create map with generateMapData.py
 app.post("/maps", (req, res) => {
     const values = {

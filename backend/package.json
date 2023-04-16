@@ -9,6 +9,9 @@
     "start": "nodemon index.js",
     "preinstall": "echo 'Installing Python Dependencies...' && pip install -r py-requirements.txt"
   },
+  "nodemonConfig": {
+    "ignore": ["generate_maps/maps/*"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
