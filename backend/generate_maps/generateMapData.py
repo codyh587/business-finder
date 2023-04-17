@@ -13,6 +13,15 @@ Each map file contains an array of JSON objects with the following attributes:
     "a": string representing the address for the retrieved business
     "t": string representing the business type for the retrieved business
 
+Global Variables:
+    LAT_PART: float for lat_size parameter in localSearch.search_grid()
+    LONG_PART: float for long_partition parameter in localSearch.search_grid()
+    SET_SIZE: boolean for set_size parameter in localSearch.search_grid()
+    TCP_LIMIT: int for maximum concurrent TCP connections for Bing Maps API
+        requests (limit is 5)
+    MAX_RESULTS: int for maximum payload size for Bing Maps API responses
+        (limit is 25)
+
 Input Values:
     city: string representing the desired city to search
     state: string representing the state of the desired city to search
@@ -30,6 +39,15 @@ from mapIndexHandler import create_index
 from os.path import dirname
 from requests import get
 
+
+# LAT_PART = 0.00035
+# LONG_PART = 0.00035
+# SET_SIZE = True
+LAT_PART = 2
+LONG_PART = 2
+SET_SIZE = False
+TCP_LIMIT = 4
+MAX_RESULTS = 25
 
 # Retrieve input values
 city = input()
@@ -78,15 +96,14 @@ async def retrieve(url, session):
 
 
 async def retrieve_all():
-    # 5 is the max for Bing Maps API
-    connector = TCPConnector(limit=4)
+    connector = TCPConnector(limit=TCP_LIMIT)
     async with ClientSession(connector=connector) as session:
         tasks = []
-        for grid in search_grid(bounding_box, 1, 1):
+        for grid in search_grid(bounding_box, LAT_PART, LONG_PART, SET_SIZE):
             for requested_type in requested_types:
                 url = construct_request(
                     types=requested_type,
-                    maxResults=25,
+                    maxResults=MAX_RESULTS,
                     userMapView=grid,
                     key=bing_maps_api_key
                 )

@@ -33,7 +33,7 @@ from os.path import exists, getsize
 from secrets import token_urlsafe
 
 
-MAP_ID_LENGTH = 10
+MAP_ID_LENGTH = 10 * 3//4   # multiply length by 3/4 due to Base64 encoding
 MAP_ID_RETRY_LIMIT = 10000
 
 
@@ -49,10 +49,10 @@ def create_index(index_path, map_title):
         index = loads(index_file.read())
         covered_names = set(entry['id'] for entry in index)
 
-    new_id = token_urlsafe(MAP_ID_LENGTH * 3//4)
+    new_id = token_urlsafe(MAP_ID_LENGTH)
     iterations = 0
     while new_id in covered_names:
-        new_id = token_urlsafe(MAP_ID_LENGTH * 3//4)
+        new_id = token_urlsafe(MAP_ID_LENGTH)
         iterations += 1
         if iterations >= MAP_ID_RETRY_LIMIT:
             raise ValueError("Map ID creation failed")

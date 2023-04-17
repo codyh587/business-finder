@@ -27,6 +27,7 @@ app.get("/maps/:id", (req, res) => {
 })
 
 // create map with generateMapData.py
+// TODO: verify input values are correct (Python probably works)
 app.post("/maps", (req, res) => {
     const values = {
         "city": req.body.city,
