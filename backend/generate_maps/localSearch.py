@@ -136,6 +136,7 @@ def construct_request(query=None,
                                     userMapView, key)
 
     url = f"https://dev.virtualearth.net/REST/v1/LocalSearch/?key={key}"
+
     if query:
         url += f"&query={query.replace(' ', '%20')}"
     if types:
@@ -153,8 +154,13 @@ def construct_request(query=None,
     return url
 
 
-def validate_request_parameters(query, types, maxResults, userCircularMapView,
-                                userLocation, userMapView, key=None):
+def validate_request_parameters(query=None,
+                                types=None,
+                                maxResults=None,
+                                userCircularMapView=None,
+                                userLocation=None,
+                                userMapView=None,
+                                key=None):
     """
     Helper method to perform optional construct_request() parameter validation.
     Does not validate specfied data types.

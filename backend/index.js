@@ -27,7 +27,6 @@ app.get("/maps/:id", (req, res) => {
 })
 
 // create map with generateMapData.py
-// TODO: verify input values are correct (Python probably works)
 app.post("/maps", (req, res) => {
     const values = {
         "city": req.body.city,
@@ -39,10 +38,13 @@ app.post("/maps", (req, res) => {
     var pyshell = new PythonShell(createMapPath, { pythonOptions: ["-u"] });
     for (const value of Object.values(values)) pyshell.send(value)
 
-    pyshell.on("message", function (message) { console.log(message) })
-    pyshell.end(function (err) { if (err) throw err })
-
-    return res.json("Map generated successfully")
+    try {
+        pyshell.on("message", function (message) { console.log(message) })
+        pyshell.end(function (err) { if (err) console.log(err) })
+        pyshell.on("close", () => { return res.json("Map generated successfully") })
+    } catch (err) {
+        return res.json("Map generation failed")
+    }
 })
 
 // update map with mapIndexHandler.py
@@ -56,10 +58,14 @@ app.put("/maps/:id", (req, res) => {
     pyshell.send(mapId)
     pyshell.send(newTitle)
 
-    pyshell.on("message", function (message) { console.log(message) })
-    pyshell.end(function (err) { if (err) throw err })
-
-    return res.json("Map updated successfully")
+    try {
+        pyshell.on("message", function (message) { console.log(message) })
+        pyshell.end(function (err) { if (err) console.log(err) })
+        pyshell.on("close", () => { return res.json("Map updated successfully") })
+    }
+    catch (err) {
+        return res.json("Map update failed")
+    }
 })
 
 // delete map with mapIndexHandler.py
@@ -71,10 +77,14 @@ app.delete("/maps/:id", (req, res) => {
     pyshell.send(mapIndexPath)
     pyshell.send(mapId)
 
-    pyshell.on("message", function (message) { console.log(message) })
-    pyshell.end(function (err) { if (err) throw err })
-
-    return res.json("Map deleted successfully")
+    try {
+        pyshell.on("message", function (message) { console.log(message) })
+        pyshell.end(function (err) { if (err) console.log(err) })
+        pyshell.on("close", () => { return res.json("Map deleted successfully") })
+    }
+    catch (err) {
+        return res.json("Map delete failed")
+    }
 })
 
 app.listen(8800, () => {

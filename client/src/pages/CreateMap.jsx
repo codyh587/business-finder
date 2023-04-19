@@ -1,10 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-// Create map
+// Create map form
 const CreateMap = () => {
-  const navigate = useNavigate()
 
   const [newMap, setNewMap] = useState({
     city: "",
@@ -13,16 +12,25 @@ const CreateMap = () => {
     businessTypes: [],
   });
 
+  const titleCase = (str) => {
+    return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
+  }
+
   const handleChange = (e) => {
     setNewMap(prev => (
-      { ...prev, [e.target.name]: e.target.value }
+      { ...prev, [e.target.name]: titleCase(e.target.value.replace(/\s/g, '')) }
     ))
   };
 
   const handleBusinessTypeChange = (e) => {
-    const types = e.target.value.split(",")
+    const types = e.target.value.replace(/\s/g, '').split(",")
+    const titleCaseTypes = types.map(
+      (item) => {
+        return titleCase(item)
+      }
+    )
     setNewMap(prev => (
-      { ...prev, businessTypes: types }
+      { ...prev, businessTypes: titleCaseTypes }
     ))
   };
 
@@ -30,7 +38,9 @@ const CreateMap = () => {
     e.preventDefault()
     try {
       await axios.post("http://localhost:8800/maps", newMap)
-      navigate("/")
+      // TODO delay reload until python can be run synchronously
+      await new Promise(resolve => setTimeout(resolve, 250));
+      window.location.reload()
       console.log(newMap)
     } catch (err) {
       console.log(err)
@@ -53,7 +63,7 @@ const CreateMap = () => {
   );
 };
 
-// Current map listing, contains update, delete, and view buttons
+// Separate React component: create current maps listing, contains update, delete, and view buttons
 const ViewMaps = () => {
   const [maps, setMaps] = useState([]);
 
@@ -72,8 +82,6 @@ const ViewMaps = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete("http://localhost:8800/maps/" + id)
-      // delay reload until python can be run synchronously
-      await new Promise(resolve => setTimeout(resolve, 100));
       window.location.reload()
     } catch (err) {
       console.log(err)

@@ -21,6 +21,8 @@ Global Variables:
         requests (limit is 5)
     MAX_RESULTS: int for maximum payload size for Bing Maps API responses
         (limit is 25)
+    BING_MAPS_API_KEY: string for Bing Maps API key located in
+        generate_maps/secrets.json with key ["bing_maps_api_key"]
 
 Input Values:
     city: string representing the desired city to search
@@ -38,16 +40,21 @@ from localSearch import construct_request, parse_locations, search_grid
 from mapIndexHandler import create_index
 from os.path import dirname
 from requests import get
+from verifyMapInputs import verify_map_inputs
 
 
-# LAT_PART = 0.00035
-# LONG_PART = 0.00035
-# SET_SIZE = True
-LAT_PART = 2
-LONG_PART = 2
-SET_SIZE = False
+# Global Variables
+LAT_PART = 0.0005
+LONG_PART = 0.0005
+SET_SIZE = True
 TCP_LIMIT = 4
 MAX_RESULTS = 25
+
+# Retrieve Bing Maps API key
+file_path = dirname(__file__)
+with open(f'{file_path}\secrets.json', 'r') as secrets:
+    BING_MAPS_API_KEY = loads(secrets.read())['bing_maps_api_key']
+print("Retrieved API key")
 
 # Retrieve input values
 city = input()
@@ -56,18 +63,24 @@ title = input()
 requested_types = tuple(input().split(','))
 print("Retrieved input values")
 
-# Retrieve Bing Maps API key
-file_path = dirname(__file__)
-with open(f'{file_path}\secrets.json', 'r') as secrets:
-    bing_maps_api_key = loads(secrets.read())['bing_maps_api_key']
-print("Retrieved API key")
+# Send Nominatim API request
+nominatim_request_url = ("https://nominatim.openstreetmap.org/search.php?" +
+    "format=json&city=" + city + "&state=" + state)
+nominatim_response = get(nominatim_request_url).json()
+print("Received Nominatim response")
+
+# Verify map input values
+verify_map_inputs(city,
+                  state,
+                  title,
+                  requested_types,
+                  MAX_RESULTS,
+                  BING_MAPS_API_KEY,
+                  TCP_LIMIT,
+                  nominatim_response)
 
 # Retrieve city bounding box
-nominatim_request = get(
-    "https://nominatim.openstreetmap.org/search.php?format=json&city=" + city
-    + "&state=" + state
-)
-bounding_box = nominatim_request.json()[0]['boundingbox']
+bounding_box = nominatim_response[0]['boundingbox']
 bounding_box[2], bounding_box[1] = bounding_box[1], bounding_box[2]
 bounding_box = tuple(map(float, bounding_box))
 print("Retrieved bounding box", bounding_box)
@@ -83,7 +96,6 @@ async def retrieve(url, session):
         for name, coordinates, address, business_type in parse_locations(
             results, desired_attributes
         ):
-            # TODO: Validate coordinates is inside the city
             map_object = {
                 'n': name,
                 'c': coordinates,
@@ -105,7 +117,7 @@ async def retrieve_all():
                     types=requested_type,
                     maxResults=MAX_RESULTS,
                     userMapView=grid,
-                    key=bing_maps_api_key
+                    key=BING_MAPS_API_KEY
                 )
                 task = ensure_future(retrieve(url, session))
                 tasks.append(task)
@@ -116,7 +128,7 @@ async def retrieve_all():
 # Create map id and entry in map index
 map_index_path = f'{file_path}\maps\map_index.json'
 map_file_name = create_index(map_index_path, title)
-print("Map index entry created")
+print("Created map index entry")
 
 # Generate and write map data
 map_objects = []
@@ -124,11 +136,13 @@ covered_addresses = set()
 with open(
     f'{file_path}\maps\{map_file_name}.json', 'w', encoding='utf-8'
 ) as map_file:
-    print("Map file created")
+    print("Created map file")
     run(retrieve_all())
-    print("Async requests completed")
+    print("Completed async requests")
     dump(
         map_objects,
         map_file,
         ensure_ascii=False
     )
+
+print("Finished map generation")

@@ -19,8 +19,6 @@ const UpdateMap = () => {
     e.preventDefault()
     try {
       await axios.put("http://localhost:8800/maps/" + mapId, newTitle)
-      // TODO delay reload until i figure out how to run the python files synchronously
-      await new Promise(resolve => setTimeout(resolve, 100));
       navigate("/")
     } catch (err) {
       console.log(err)
