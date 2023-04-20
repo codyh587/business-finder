@@ -44,9 +44,9 @@ from verifyMapInputs import verify_map_inputs
 
 
 # Global Variables
-LAT_PART = 0.0005
-LONG_PART = 0.0005
-SET_SIZE = True
+LAT_PART = 5
+LONG_PART = 8
+SET_SIZE = False
 TCP_LIMIT = 4
 MAX_RESULTS = 25
 
@@ -79,10 +79,15 @@ verify_map_inputs(city,
                   TCP_LIMIT,
                   nominatim_response)
 
-# Retrieve city bounding box
+# Retrieve city location and bounding box
+location = [
+    float(nominatim_response[0]['lat']),
+    float(nominatim_response[0]['lon'])
+]
 bounding_box = nominatim_response[0]['boundingbox']
 bounding_box[2], bounding_box[1] = bounding_box[1], bounding_box[2]
 bounding_box = tuple(map(float, bounding_box))
+print("Retrieved location", location)
 print("Retrieved bounding box", bounding_box)
 
 # Create asynchronous Bing Maps API request functions
@@ -127,7 +132,12 @@ async def retrieve_all():
 
 # Create map id and entry in map index
 map_index_path = f'{file_path}\maps\map_index.json'
-map_file_name = create_index(map_index_path, title)
+map_file_name = create_index(
+    map_index_path,
+    title,
+    location,
+    list(bounding_box)
+)
 print("Created map index entry")
 
 # Generate and write map data

@@ -5,26 +5,42 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    overflow: auto;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
 }
 
 .maps {
-    display: flex;
-    gap: 10px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
 }
 
 .map {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    width: 100%;
     align-items: center;
 }
 
-img {
-    width: 200px;
-    height: 300px;
-    object-fit: cover;
-    background-color: rgb(203, 238, 227);
+.mapData {
+    padding-bottom: 10px;
+}
+
+.menu {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    align-items: baseline;
+    padding: 100px 100px;
 }
 
 .delete {
@@ -41,7 +57,7 @@ img {
     padding: 3px 6px;
     background-color: white;
     cursor: pointer;
-    border: 1px solid rgb(204, 204, 243);
+    border: 1px solid rgb(166, 166, 231);
     color: rgb(139, 139, 234);
 }
 
@@ -54,23 +70,29 @@ img {
     color: rgb(23, 90, 20);
 }
 
-.form{
+.form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-input{
+input {
     width: 250px;
     padding: 10px;
     border: 1px solid gray;
 }
 
-.formButton{
+.formButton {
     border: none;
     padding: 10px;
     background-color: rgb(244, 142, 74);
     color: white;
     font-weight: bold;
     cursor: pointer;
+}
+
+.leaflet-container {
+    width: 175vh;
+    height: 80vh;
+    align-self: center;
 }

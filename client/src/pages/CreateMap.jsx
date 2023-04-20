@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 // Create map form
 const CreateMap = () => {
-
   const [newMap, setNewMap] = useState({
     city: "",
     state: "",
@@ -14,11 +13,17 @@ const CreateMap = () => {
 
   const titleCase = (str) => {
     return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
-  }
+  };
 
   const handleChange = (e) => {
     setNewMap(prev => (
       { ...prev, [e.target.name]: titleCase(e.target.value.replace(/\s/g, '')) }
+    ))
+  };
+
+  const handleTitleChange = (e) => {
+    setNewMap(prev => (
+      { ...prev, [e.target.name]: e.target.value.trim() }
     ))
   };
 
@@ -50,14 +55,16 @@ const CreateMap = () => {
   //  TODO: make the business type input a checkbox list
   return (
     <div>
-      <ViewMaps />
-      <div className='form'>
-        <h1>Create New Map</h1>
-        <input type="text" placeholder='City' onChange={handleChange} name="city" />
-        <input type="text" placeholder='State' onChange={handleChange} name="state" />
-        <input type="text" placeholder='Title' onChange={handleChange} name="title" />
-        <input type="text" placeholder='Business Types' onChange={handleBusinessTypeChange} name="businessTypes" />
-        <button onClick={handleClick}>Add</button>
+      <div className='menu'>
+        <ViewMaps />
+        <div className='form'>
+          <h1>Create New Map</h1>
+          <input type="text" placeholder='City' onChange={handleChange} name="city" />
+          <input type="text" placeholder='State' onChange={handleChange} name="state" />
+          <input type="text" placeholder='Title' onChange={handleTitleChange} name="title" />
+          <input type="text" placeholder='Business Types' onChange={handleBusinessTypeChange} name="businessTypes" />
+          <button onClick={handleClick}>Add</button>
+        </div>
       </div>
     </div>
   );
@@ -96,10 +103,12 @@ const ViewMaps = () => {
           maps.map(
             (map) => (
               <div className="map" key={map.id}>
-                <h2>{map.title}</h2>
+                <h3>{map.title}</h3>
+                <div className='buttons'>
                 <button className="view"><Link to={`/viewMap/${map.id}`}>View</Link></button>
                 <button className="update"><Link to={`/updateMap/${map.id}`}>Update</Link></button>
                 <button className="delete" onClick={() => handleDelete(map.id)}>Delete</button>
+                </div>
               </div>
             )
           )

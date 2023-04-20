@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+// Update map title
 const UpdateMap = () => {
   const [newTitle, setNewTitle] = useState({
     newTitle: "",

@@ -5,6 +5,8 @@ named map_index.json.
 map_index.json contains an array of JSON objects with the following attributes:
     "id": string representing a base-64 unique identifier for a given map.
     "title": string representing the user-created name for a given map.
+    "location": a list of 2 floats specifying the coordinate location for the
+        specfied city
 
 Each object in map_index corresponds to a file in the /maps directory. The file
 name for any corresponding map is id.json.
@@ -43,7 +45,7 @@ def ensure_exists(index_path):
             dump([], index_file)
 
 
-def create_index(index_path, map_title):
+def create_index(index_path, map_title, location, bounds):
     ensure_exists(index_path)
     with open(index_path, 'r') as index_file:
         index = loads(index_file.read())
@@ -59,7 +61,9 @@ def create_index(index_path, map_title):
 
     index.append({
         'id': new_id,
-        'title': map_title
+        'title': map_title,
+        'location': location,
+        'bounds': bounds
     })
 
     with open(index_path, 'w') as index_file:
