@@ -61,7 +61,7 @@ const ViewMap = () => {
       states: [
         {
           stateName: 'zoom-markers',
-          icon: 'fa-search-minus',
+          icon: 'fa-map-marker',
           title: 'Zoom out to all markers',
           onClick: function (btn, map) {
             map.fitBounds(markerBounds)
@@ -70,7 +70,7 @@ const ViewMap = () => {
         },
         {
           stateName: 'zoom-state',
-          icon: 'fa-search-plus',
+          icon: 'fa-building',
           title: 'Zoom in to state border',
           onClick: function (btn, map) {
             map.fitBounds(mapBounds)
