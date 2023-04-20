@@ -11,6 +11,8 @@ const CreateMap = () => {
     businessTypes: [],
   });
 
+  const [loading, setLoading] = useState(false);
+
   const titleCase = (str) => {
     return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
   };
@@ -42,9 +44,9 @@ const CreateMap = () => {
   const handleClick = async e => {
     e.preventDefault()
     try {
+      setLoading(true)
       await axios.post("http://localhost:8800/maps", newMap)
-      // TODO delay reload until python can be run synchronously
-      await new Promise(resolve => setTimeout(resolve, 250));
+      setLoading(false)
       window.location.reload()
       console.log(newMap)
     } catch (err) {
@@ -52,18 +54,26 @@ const CreateMap = () => {
     }
   };
 
+  function AddButton() {
+    if (loading) {
+      return <button className="btn btn-l loading btn-disabled">Add</button>
+    } else {
+      return <button className="btn btn-l" onClick={handleClick}>Add</button>
+    }
+  }
+
   //  TODO: make the business type input a checkbox list
   return (
     <div>
-      <div className='menu'>
+      <div className='grid grid-cols-2 gap-10'>
         <ViewMaps />
-        <div className='form'>
-          <h1>Create New Map</h1>
-          <input type="text" placeholder='City' onChange={handleChange} name="city" />
-          <input type="text" placeholder='State' onChange={handleChange} name="state" />
-          <input type="text" placeholder='Title' onChange={handleTitleChange} name="title" />
-          <input type="text" placeholder='Business Types' onChange={handleBusinessTypeChange} name="businessTypes" />
-          <button onClick={handleClick}>Add</button>
+        <div className='grid grid-cols-1 gap-1'>
+          <h1 className="card-title justify-center">Create New Map</h1>
+          <input type="text" placeholder="Enter City" className="input input-bordered w-full max-w-xs" onChange={handleChange} name="city" />
+          <input type="text" placeholder="Enter State" className="input input-bordered w-full max-w-xs" onChange={handleChange} name="state" />
+          <input type="text" placeholder="Enter Map Title" className="input input-bordered w-full max-w-xs" onChange={handleTitleChange} name="title" />
+          <input type="text" placeholder="Enter Business Types" className="input input-bordered w-full max-w-xs" onChange={handleBusinessTypeChange} name="businessTypes" />
+          <AddButton />
         </div>
       </div>
     </div>
@@ -96,24 +106,24 @@ const ViewMaps = () => {
   };
 
   return (
-    <div>
-      <h1>My Maps</h1>
-      <div className="maps">
-        {
-          maps.map(
-            (map) => (
-              <div className="map" key={map.id}>
-                <h3>{map.title}</h3>
-                <div className='buttons'>
-                <button className="view"><Link to={`/viewMap/${map.id}`}>View</Link></button>
-                <button className="update"><Link to={`/updateMap/${map.id}`}>Update</Link></button>
-                <button className="delete" onClick={() => handleDelete(map.id)}>Delete</button>
+    <div className="grid grid-cols-1 gap-2">
+      <h1 className="card-title justify-center">My Maps</h1>
+      {
+        maps.map(
+          (map) => (
+            <div className="card card-compact card-bordered bg-base-100 shadow-xl">
+              <div className="card-body">
+                <h2 className="card-title">{map.title}</h2>
+                <div className="card-actions">
+                  <button className="btn btn-xs btn-primary"><Link to={`/viewMap/${map.id}`}>View</Link></button>
+                  <button className="btn btn-xs btn-secondary"><Link to={`/updateMap/${map.id}`}>Update</Link></button>
+                  <button className="btn btn-xs btn-accent text-white" onClick={() => handleDelete(map.id)}>Delete</button>
                 </div>
               </div>
-            )
+            </div>
           )
-        }
-      </div>
+        )
+      }
     </div>
   );
 };

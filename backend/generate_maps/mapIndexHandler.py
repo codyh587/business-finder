@@ -90,6 +90,9 @@ def delete_index(index_path, map_id):
 
 def update_index(index_path, map_id, new_title):
     ensure_exists(index_path)
+    if not new_title:
+        raise ValueError("Invalid new title")
+
     with open(index_path, 'r') as index_file:
         index = loads(index_file.read())
 

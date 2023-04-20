@@ -1,5 +1,5 @@
 import axios from 'axios'
-import L, { latLngBounds } from 'leaflet';
+import L, { latLngBounds, marker } from 'leaflet';
 import React, { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Popup, CircleMarker } from 'react-leaflet'
 import { Link, useLocation } from 'react-router-dom'
@@ -12,9 +12,9 @@ import "font-awesome/css/font-awesome.min.css";
 const ViewMap = () => {
   const location = useLocation();
   const mapId = location.pathname.split("/")[2];
-  const [mapData, setMapData] = useState([[null, null], [null, null]]);
+  const [mapData, setMapData] = useState([]);
   const [mapLocation, setMapLocation] = useState({ lat: null, lng: null });
-  const [mapBounds, setMapBounds] = useState([]);
+  const [mapBounds, setMapBounds] = useState([[null, null], [null, null]]);
   const [mapTitle, setMapTitle] = useState("");
   const [map, setMap] = useState(null);
   const markerBounds = latLngBounds([]);
@@ -65,13 +65,14 @@ const ViewMap = () => {
           title: 'Zoom out to all markers',
           onClick: function (btn, map) {
             map.fitBounds(markerBounds)
+
             btn.state('zoom-state');
           }
         },
         {
           stateName: 'zoom-state',
           icon: 'fa-building',
-          title: 'Zoom in to state border',
+          title: 'Zoom in to city border',
           onClick: function (btn, map) {
             map.fitBounds(mapBounds)
             btn.state('zoom-markers');
@@ -97,45 +98,42 @@ const ViewMap = () => {
     });
 
     return (
-      <div>
-        <h2>View Map: {mapTitle}</h2>
-        <div className="mapData">
-          <MapContainer
-            center={[mapLocation.lat, mapLocation.lng]}
-            bounds={mapBounds}
-            boundsOptions={{ padding: [20, 20] }}
-            ref={setMap}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            {
-              mapData.map(
-                (item) => (
-                  <CircleMarker
-                    center={item.c}
-                    radius={3.5}
-                    color={"#FF5F1F"}
-                    fillOpacity={1}
-                    eventHandlers={{
-                      mouseover: (event) => event.target.openPopup(),
-                    }}
-                  >
-                    <Popup>
-                      <b>{item.n}</b> <br />
-                      {item.a} <br />
-                      <hr></hr>
-                      <i>Type: {item.t}</i>
-                    </Popup>
-                  </CircleMarker>
-                )
+      <div className="flex-col space-y-3">
+        <h2 className="card-title justify-center">View Map: {mapTitle}</h2>
+        <MapContainer
+          center={mapLocation}
+          bounds={mapBounds}
+          boundsOptions={{ padding: [20, 20] }}
+          ref={setMap}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {
+            mapData.map(
+              (item) => (
+                <CircleMarker
+                  center={item.c}
+                  radius={3.5}
+                  color={"#FF5F1F"}
+                  fillOpacity={1}
+                  eventHandlers={{
+                    mouseover: (event) => event.target.openPopup(),
+                  }}
+                >
+                  <Popup>
+                    <b>{item.n}</b> <br />
+                    {item.a} <br />
+                    <hr></hr>
+                    <i>Type: {item.t}</i>
+                  </Popup>
+                </CircleMarker>
               )
-            }
-          </MapContainer>
-
-        </div>
-        <button className="back"><Link to={`/`}>Back</Link></button>
+            )
+          }
+        </MapContainer>
+        <button className="btn btn-sm w-min"><Link to={`/`}>Back</Link></button>
       </div>
     );
   };

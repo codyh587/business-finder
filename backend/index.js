@@ -27,6 +27,7 @@ app.get("/maps/:id", (req, res) => {
 })
 
 // create map with generateMapData.py
+// TODO add phone number and website to the datafile
 app.post("/maps", (req, res) => {
     const values = {
         "city": req.body.city,

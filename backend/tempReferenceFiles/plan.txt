@@ -1,11 +1,12 @@
 Client
-1. Retrieve CSV file containing business data
-2. Use Leaflet API to generate map
-3. Use Google Charts API to generate charts
+1. Retrieve CSV file containing business data - DONE
+2. Use Leaflet API to generate map - DONE
+3. [TODO] Use Google Charts API to generate charts
+4. [TODO] Use Tailwind to make this not look like a disaster
 
 Backend
-1. Receive JSON payload containing city and businessType info from Leaflet map
-2. Use Nominatim API to find boundaries of city
-3. Use Bing Maps API and write data (JSON/CSV?) to file containing requested info
-4. Pass data to client
-5. Create a file listing all the current map files (like a db) and assign item IDs like that
+1. Receive JSON payload containing city and businessType info from Leaflet map - DONE
+2. Use Nominatim API to find boundaries of city - DONE
+3. Use Bing Maps API and write data (JSON/CSV?) to file containing requested info - DONE
+4. Pass data to client - DONE
+5. Create a file listing all the current map files (like a db) and assign item IDs like that - DONE

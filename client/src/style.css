@@ -5,94 +5,12 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    overflow: auto;
-}
-
-.buttons {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-}
-
-.maps {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-}
-
-.map {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-}
-
-.mapData {
-    padding-bottom: 10px;
-}
-
-.menu {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    gap: 100px;
-    align-items: baseline;
-    padding: 100px 100px;
-}
-
-.delete {
-    border: none;
-    padding: 3px 6px;
-    background-color: white;
-    cursor: pointer;
-    border: 1px solid rgb(245, 191, 191);
-    color: rgb(242, 100, 100);
-}
-
-.update {
-    border: none;
-    padding: 3px 6px;
-    background-color: white;
-    cursor: pointer;
-    border: 1px solid rgb(166, 166, 231);
-    color: rgb(139, 139, 234);
-}
-
-.view {
-    border: none;
-    padding: 3px 6px;
-    background-color: white;
-    cursor: pointer;
-    border: 1px solid rgb(19, 155, 76);
-    color: rgb(23, 90, 20);
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-input {
-    width: 250px;
-    padding: 10px;
-    border: 1px solid gray;
-}
-
-.formButton {
-    border: none;
-    padding: 10px;
-    background-color: rgb(244, 142, 74);
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .leaflet-container {
-    width: 175vh;
+    width: 150vh;
     height: 80vh;
     align-self: center;
 }
