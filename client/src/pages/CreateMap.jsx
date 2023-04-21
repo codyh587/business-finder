@@ -60,20 +60,22 @@ const CreateMap = () => {
     } else {
       return <button className="btn btn-l" onClick={handleClick}>Add</button>
     }
-  }
+  };
 
-  //  TODO: make the business type input a checkbox list
   return (
     <div>
-      <div className='grid grid-cols-2 gap-10'>
+      <div className='inline-flex flex-row h-fit gap-14 items-start'>
         <ViewMaps />
-        <div className='grid grid-cols-1 gap-1'>
+        <div className='grid grid-cols-1 gap-2'>
           <h1 className="card-title justify-center">Create New Map</h1>
           <input type="text" placeholder="Enter City" className="input input-bordered w-full max-w-xs" onChange={handleChange} name="city" />
           <input type="text" placeholder="Enter State" className="input input-bordered w-full max-w-xs" onChange={handleChange} name="state" />
           <input type="text" placeholder="Enter Map Title" className="input input-bordered w-full max-w-xs" onChange={handleTitleChange} name="title" />
-          <input type="text" placeholder="Enter Business Types" className="input input-bordered w-full max-w-xs" onChange={handleBusinessTypeChange} name="businessTypes" />
+          <div className="tooltip" data-tip="Enter a comma-separated list of valid business types. View valid inputs below.">
+            <input type="text" placeholder="Enter Business Types" className="input input-bordered w-full max-w-xs" onChange={handleBusinessTypeChange} name="businessTypes" />
+          </div>
           <AddButton />
+          <button className="btn btn-sm"><Link to={`/validTypes`}>Valid Business Types</Link></button>
         </div>
       </div>
     </div>
@@ -113,8 +115,8 @@ const ViewMaps = () => {
           (map) => (
             <div className="card card-compact card-bordered bg-base-100 shadow-xl">
               <div className="card-body">
-                <h2 className="card-title">{map.title}</h2>
-                <div className="card-actions">
+                <h2 className="card-title justify-center">{map.title}</h2>
+                <div className="card-actions justify-center">
                   <button className="btn btn-xs btn-primary"><Link to={`/viewMap/${map.id}`}>View</Link></button>
                   <button className="btn btn-xs btn-secondary"><Link to={`/updateMap/${map.id}`}>Update</Link></button>
                   <button className="btn btn-xs btn-accent text-white" onClick={() => handleDelete(map.id)}>Delete</button>

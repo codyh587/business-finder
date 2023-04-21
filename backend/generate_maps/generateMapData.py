@@ -12,6 +12,8 @@ Each map file contains an array of JSON objects with the following attributes:
         retrieved business
     "a": string representing the address for the retrieved business
     "t": string representing the business type for the retrieved business
+    "p": string representing the phone number for the retrieved business
+    "w": string representing the website for the retrieved business
 
 Global Variables:
     LAT_PART: float for lat_size parameter in localSearch.search_grid()
@@ -92,24 +94,26 @@ print("Retrieved bounding box", bounding_box)
 
 # Create asynchronous Bing Maps API request functions
 desired_attributes = ('name', 'point.coordinates', 'Address.formattedAddress',
-                      'entityType')
+                      'entityType', 'PhoneNumber', 'Website')
 
 
 async def retrieve(url, session):
     async with session.get(url) as response:
         results = await response.json()
-        for name, coordinates, address, business_type in parse_locations(
+        for name, coords, add, bus_type, phone, website in parse_locations(
             results, desired_attributes
         ):
             map_object = {
                 'n': name,
-                'c': coordinates,
-                'a': address,
-                't': business_type
+                'c': coords,
+                'a': add,
+                't': bus_type,
+                'p': phone,
+                'w': website
             }
-            if address not in covered_addresses:
+            if add not in covered_addresses:
                 map_objects.append(map_object)
-                covered_addresses.add(address)
+                covered_addresses.add(add)
 
 
 async def retrieve_all():

@@ -2,6 +2,7 @@
     height: 100vh;
     padding: 0px 100px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -9,8 +10,31 @@
     overflow-y: auto;
 }
 
+.ValidTypes {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.ViewMap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .leaflet-container {
     width: 150vh;
     height: 80vh;
     align-self: center;
+    border-radius: 20px;
+}
+
+.request-popup .leaflet-popup-content-wrapper {
+    width: max-content;
+}
+
+hr {
+    margin-top: 1px;
+    margin-bottom: 3px
 }
