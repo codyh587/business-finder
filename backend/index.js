@@ -5,7 +5,6 @@ import { PythonShell } from 'python-shell'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const mapIndexPath = path.join(__dirname, 'generate_maps', 'maps', 'map_index.json')
 const createMapPath = path.join(__dirname, 'generate_maps', 'generateMapData.py')
 const indexHandlerPath = path.join(__dirname, 'generate_maps', 'mapIndexHandler.py')
 
@@ -15,8 +14,16 @@ app.use(cors())
 
 // get map index
 app.get("/maps", (req, res) => {
-    res.header("Content-Type", 'application/json')
-    res.sendFile(mapIndexPath)
+    var pyshell = new PythonShell(indexHandlerPath, { pythonOptions: ["-u"] });
+    pyshell.send("GET")
+
+    try {
+        pyshell.on("message", function (message) { return res.json(JSON.parse(message)) })
+        pyshell.end(function (err) { if (err) console.log(err) })
+    }
+    catch (err) {
+        return res.json("Map index get failed")
+    }
 })
 
 // get specific map file
@@ -42,7 +49,8 @@ app.post("/maps", (req, res) => {
         pyshell.on("message", function (message) { console.log(message) })
         pyshell.end(function (err) { if (err) console.log(err) })
         pyshell.on("close", () => { return res.json("Map generated successfully") })
-    } catch (err) {
+    }
+    catch (err) {
         return res.json("Map generation failed")
     }
 })
@@ -54,7 +62,6 @@ app.put("/maps/:id", (req, res) => {
 
     var pyshell = new PythonShell(indexHandlerPath, { pythonOptions: ["-u"] })
     pyshell.send("UPDATE")
-    pyshell.send(mapIndexPath)
     pyshell.send(mapId)
     pyshell.send(newTitle)
 
@@ -74,7 +81,6 @@ app.delete("/maps/:id", (req, res) => {
 
     var pyshell = new PythonShell(indexHandlerPath, { pythonOptions: ["-u"] })
     pyshell.send("DELETE")
-    pyshell.send(mapIndexPath)
     pyshell.send(mapId)
 
     try {

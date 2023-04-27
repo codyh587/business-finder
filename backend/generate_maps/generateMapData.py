@@ -23,8 +23,8 @@ Global Variables:
         requests (limit is 5)
     MAX_RESULTS: int for maximum payload size for Bing Maps API responses
         (limit is 25)
-    BING_MAPS_API_KEY: string for Bing Maps API key located in
-        generate_maps/secrets.json with key ["bing_maps_api_key"]
+    BING_MAPS_KEY: string for Bing Maps API key located in
+        generate_maps/secrets.json with key "BING_MAPS_KEY"
 
 Input Values:
     city: string representing the desired city to search
@@ -51,11 +51,11 @@ LONG_PART = 8
 SET_SIZE = False
 TCP_LIMIT = 4
 MAX_RESULTS = 25
+FILE_PATH = dirname(__file__)
 
 # Retrieve Bing Maps API key
-file_path = dirname(__file__)
-with open(f'{file_path}\secrets.json', 'r') as secrets:
-    BING_MAPS_API_KEY = loads(secrets.read())['bing_maps_api_key']
+with open(f'{FILE_PATH}\secrets.json', 'r') as secrets:
+    BING_MAPS_KEY = loads(secrets.read())['BING_MAPS_KEY']
 print("Retrieved API key")
 
 # Retrieve input values
@@ -77,7 +77,7 @@ verify_map_inputs(city,
                   title,
                   requested_types,
                   MAX_RESULTS,
-                  BING_MAPS_API_KEY,
+                  BING_MAPS_KEY,
                   TCP_LIMIT,
                   nominatim_response)
 
@@ -126,7 +126,7 @@ async def retrieve_all():
                     types=requested_type,
                     maxResults=MAX_RESULTS,
                     userMapView=grid,
-                    key=BING_MAPS_API_KEY
+                    key=BING_MAPS_KEY
                 )
                 task = ensure_future(retrieve(url, session))
                 tasks.append(task)
@@ -135,9 +135,7 @@ async def retrieve_all():
 
 
 # Create map id and entry in map index
-map_index_path = f'{file_path}\maps\map_index.json'
 map_file_name = create_index(
-    map_index_path,
     title,
     location,
     list(bounding_box)
@@ -148,7 +146,7 @@ print("Created map index entry")
 map_objects = []
 covered_addresses = set()
 with open(
-    f'{file_path}\maps\{map_file_name}.json', 'w', encoding='utf-8'
+    f'{FILE_PATH}\maps\{map_file_name}.json', 'w', encoding='utf-8'
 ) as map_file:
     print("Created map file")
     run(retrieve_all())
