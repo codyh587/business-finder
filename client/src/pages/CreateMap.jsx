@@ -15,7 +15,7 @@ const CreateMap = () => {
 
   const handleChange = (e) => {
     setNewMap(prev => (
-      { ...prev, [e.target.name]: e.target.value.replace(/\s/g, '') }
+      { ...prev, [e.target.name]: e.target.value.trim().replace(/\s+/g, '+') }
     ))
   };
 
