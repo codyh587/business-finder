@@ -18,6 +18,7 @@ Global Variables:
     MAP_ID_RETRY_LIMIT: retry limit for creating map_index attribute "id"
 
 Functions:
+    gen_index: creates table Map in the MySQL Database
     get_index: returns a list of dictionaries containing contents of Map
     create_index: creates a unique base-64 map id and entry in map_index.json
     delete_index: deletes an entry from Map and its corresponding file
@@ -46,21 +47,30 @@ FILE_PATH = dirname(__file__)
 def retrieve_secrets():
     with open(f'{FILE_PATH}\secrets.json', 'r') as secrets:
         secrets = loads(secrets.read())
-        host = secrets['DB_HOST']
-        user = secrets['DB_USER']
-        passwd = secrets['DB_PASSWD']
-        name = secrets['DB_NAME']
-    return host, user, passwd, name
+        config = {
+            'host': secrets['DB_HOST'],
+            'user': secrets['DB_USER'],
+            'password': secrets['DB_PASSWD'],
+            'database': secrets['DB_NAME'],
+            'client_flags': [mysql.connector.ClientFlag.SSL],
+            'ssl_ca': FILE_PATH + '\DigiCertGlobalRootG2.crt.pem'
+        }
+    return config
+
+
+def gen_index():
+    config = retrieve_secrets()
+    db = mysql.connector.connect(**config)
+    cursor = db.cursor()
+    create = "CREATE TABLE Map (id VARCHAR(10) PRIMARY KEY, title VARCHAR(100), location VARCHAR(30), bounds VARCHAR(60))"
+    cursor.execute(create)
+    cursor.close()
+    db.close()
 
 
 def get_index():
-    host, user, passwd, name, = retrieve_secrets()
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=name
-    )
+    config = retrieve_secrets()
+    db = mysql.connector.connect(**config)
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM Map")
     results = cursor.fetchall()
@@ -68,17 +78,13 @@ def get_index():
         result["location"] = loads(result["location"])
         result["bounds"] = loads(result["bounds"])
     cursor.close()
+    db.close()
     return dumps(results)
 
 
 def create_index(map_title, location, bounds):
-    host, user, passwd, name, = retrieve_secrets()
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=name
-    )
+    config = retrieve_secrets()
+    db = mysql.connector.connect(**config)
     cursor = db.cursor()
     cursor.execute("SELECT id FROM Map")
     results = cursor.fetchall()
@@ -102,21 +108,18 @@ def create_index(map_title, location, bounds):
         f"INSERT INTO Map (id, title, location, bounds) VALUES {insert}")
     db.commit()
     cursor.close()
+    db.close()
     return new_id
 
 
 def delete_index(map_id):
-    host, user, passwd, name, = retrieve_secrets()
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=name
-    )
+    config = retrieve_secrets()
+    db = mysql.connector.connect(**config)
     cursor = db.cursor()
     cursor.execute(f"DELETE FROM Map WHERE id='{map_id}'")
     db.commit()
     cursor.close()
+    db.close()
 
     try:
         remove(f'{FILE_PATH}\maps\{map_id}.json')
@@ -128,24 +131,22 @@ def update_index(map_id, new_title):
     if not new_title:
         raise ValueError("Invalid new title")
 
-    host, user, passwd, name, = retrieve_secrets()
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=name
-    )
+    config = retrieve_secrets()
+    db = mysql.connector.connect(**config)
     cursor = db.cursor()
     cursor.execute(f"UPDATE Map SET title='{new_title}' WHERE id='{map_id}'")
     db.commit()
     cursor.close()
+    db.close()
 
 
 if __name__ == '__main__':
     mode = input()
-    assert mode in ('GET', 'DELETE', 'UPDATE')
+    assert mode in ('GEN', 'GET', 'DELETE', 'UPDATE')
 
-    if mode == 'GET':
+    if mode == 'GEN':
+        gen_index()
+    elif mode == 'GET':
         print(get_index())
     elif mode == 'DELETE':
         map_id = input()

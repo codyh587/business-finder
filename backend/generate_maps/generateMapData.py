@@ -3,8 +3,8 @@ This module generates a JSON file containing location data for specified
 business types in a designated city (referred to as a map).
 
 Each map file is given a unique base-64 identifier and placed in the /maps
-directory. An entry for each map is also created in map_index.json for
-indexing purposes.
+directory. An entry for each map is also created in the MySQL Database table
+Map for indexing purposes.
 
 Each map file contains an array of JSON objects with the following attributes:
     "n": string representing the name for the retrieved business
