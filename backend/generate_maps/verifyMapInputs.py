@@ -1,6 +1,6 @@
 """
 This module contains methods to assist with verifying input values in
-generateMapData.py
+generateMapData.py.
 
 Functions:
     verify_map_values: verifies a variety of input values for
