@@ -45,7 +45,7 @@ FILE_PATH = dirname(__file__)
 
 
 def retrieve_secrets():
-    with open(f'{FILE_PATH}\secrets.json', 'r') as secrets:
+    with open(f'{FILE_PATH}/secrets.json', 'r') as secrets:
         secrets = loads(secrets.read())
         config = {
             'host': secrets['DB_HOST'],

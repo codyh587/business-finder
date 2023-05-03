@@ -13,13 +13,9 @@ const CreateMap = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const titleCase = (str) => {
-    return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
-  };
-
   const handleChange = (e) => {
     setNewMap(prev => (
-      { ...prev, [e.target.name]: titleCase(e.target.value.replace(/\s/g, '')) }
+      { ...prev, [e.target.name]: e.target.value.replace(/\s/g, '') }
     ))
   };
 
@@ -31,13 +27,8 @@ const CreateMap = () => {
 
   const handleBusinessTypeChange = (e) => {
     const types = e.target.value.replace(/\s/g, '').split(",")
-    const titleCaseTypes = types.map(
-      (item) => {
-        return titleCase(item)
-      }
-    )
     setNewMap(prev => (
-      { ...prev, businessTypes: titleCaseTypes }
+      { ...prev, businessTypes: types }
     ))
   };
 
@@ -45,7 +36,7 @@ const CreateMap = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      await axios.post("http://localhost:8800/maps", newMap)
+      await axios.post("/api/maps", newMap)
       setLoading(false)
       window.location.reload()
       console.log(newMap)
@@ -89,7 +80,7 @@ const ViewMaps = () => {
   useEffect(() => {
     const fetchAllMaps = async () => {
       try {
-        const res = await axios.get("http://localhost:8800/maps")
+        const res = await axios.get("/api/maps")
         setMaps(res.data)
       } catch (err) {
         console.log(err)
@@ -100,7 +91,7 @@ const ViewMaps = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete("http://localhost:8800/maps/" + id)
+      await axios.delete("/api/maps/" + id)
       window.location.reload()
     } catch (err) {
       console.log(err)

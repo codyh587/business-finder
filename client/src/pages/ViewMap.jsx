@@ -26,7 +26,7 @@ const ViewMap = () => {
   useEffect(() => {
     const fetchMap = async (id) => {
       try {
-        const res = await axios.get("http://localhost:8800/maps/" + id)
+        const res = await axios.get("/api/maps/" + id)
         setMapData(res.data)
       } catch (err) {
         console.log(err)
@@ -35,7 +35,7 @@ const ViewMap = () => {
 
     const fetchMapLocationAndTitle = async (id) => {
       try {
-        const res = await axios.get("http://localhost:8800/maps")
+        const res = await axios.get("/api/maps")
         res.data.forEach(element => {
           if (element.id == id) {
             setMapLocation({

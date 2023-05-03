@@ -21,7 +21,7 @@ const UpdateMap = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      await axios.put("http://localhost:8800/maps/" + mapId, newTitle)
+      await axios.put("/api/maps/" + mapId, newTitle)
       setLoading(false)
       navigate("/")
     } catch (err) {

@@ -10,14 +10,16 @@
     "preinstall": "echo 'Installing Python Dependencies...' && pip install -r py-requirements.txt"
   },
   "nodemonConfig": {
-    "ignore": ["generate_maps/maps/*"]
+    "ignore": [
+      "generate_maps/maps/*"
+    ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.18.2",
+    "helmet": "^6.1.5",
     "nodemon": "^2.0.22",
     "python-shell": "^5.0.0"
   }

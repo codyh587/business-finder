@@ -1,5 +1,5 @@
-import cors from 'cors'
 import express from 'express'
+import helmet from 'helmet'
 import path, { dirname } from 'path'
 import { PythonShell } from 'python-shell'
 import { fileURLToPath } from 'url'
@@ -10,10 +10,12 @@ const indexHandlerPath = path.join(__dirname, 'generate_maps', 'mapIndexHandler.
 
 const app = express()
 app.use(express.json())
-app.use(cors())
+app.use(helmet())
+
+const baseURL = "/api"
 
 // get map index
-app.get("/maps", (req, res) => {
+app.get(baseURL + "/maps", (req, res) => {
     var pyshell = new PythonShell(indexHandlerPath, { pythonOptions: ["-u"] });
     pyshell.send("GET")
 
@@ -27,14 +29,14 @@ app.get("/maps", (req, res) => {
 })
 
 // get specific map file
-app.get("/maps/:id", (req, res) => {
+app.get(baseURL + "/maps/:id", (req, res) => {
     const mapId = req.params.id
     res.header("Content-Type", 'application/json')
     res.sendFile(path.join(__dirname, 'generate_maps', 'maps', mapId + '.json'))
 })
 
 // create map with generateMapData.py
-app.post("/maps", (req, res) => {
+app.post(baseURL + "/maps", (req, res) => {
     const values = {
         "city": req.body.city,
         "state": req.body.state,
@@ -56,7 +58,7 @@ app.post("/maps", (req, res) => {
 })
 
 // update map with mapIndexHandler.py
-app.put("/maps/:id", (req, res) => {
+app.put(baseURL + "/maps/:id", (req, res) => {
     const mapId = req.params.id
     const newTitle = req.body.newTitle
 
@@ -76,7 +78,7 @@ app.put("/maps/:id", (req, res) => {
 })
 
 // delete map with mapIndexHandler.py
-app.delete("/maps/:id", (req, res) => {
+app.delete(baseURL + "/maps/:id", (req, res) => {
     const mapId = req.params.id
 
     var pyshell = new PythonShell(indexHandlerPath, { pythonOptions: ["-u"] })
@@ -93,6 +95,8 @@ app.delete("/maps/:id", (req, res) => {
     }
 })
 
-app.listen(8800, () => {
-    console.log("Connected to server")
-})
+const PORT = process.env.PORT || 8800;
+app.listen(PORT, (_) => {
+    console.log(`Server started on port ${PORT}`);
+    console.log(app.get('env'));
+});
