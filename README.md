@@ -1,11 +1,11 @@
 # business-finder
 
-#### Full-stack web application that generates interactive maps displaying local business data using the Leaflet, Nominatim, and Bing Maps Local Search API.
+#### Full-stack web application that generates interactive maps displaying local business data using the Leaflet, Google Charts, Nominatim, and Bing Maps Local Search API.
 
 <hr>
 
 Created using React, Tailwind, Express, Node.js, Python, and MySQL. \
-Deployed to Microsoft Azure Ubuntu VM on Nginx server with PM2 cluster.
+Deployed to Microsoft Azure Ubuntu VM on Nginx server with PM2 cluster and Azure MySQL database.
 
 Plugins used:
 * DaisyUI
@@ -35,5 +35,9 @@ server {
         }
 }
 ```
+
+#### Application Demo
+
+https://user-images.githubusercontent.com/108317527/236024701-99ad6c41-fe5d-4b91-a7af-8c1626077d85.mp4
 
 #### Credits to [Robert Beliveau](https://github.com/Bagelsause) for designing the staggered asynchronous API call functionality.
