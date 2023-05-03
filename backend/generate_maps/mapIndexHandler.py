@@ -53,7 +53,7 @@ def retrieve_secrets():
             'password': secrets['DB_PASSWD'],
             'database': secrets['DB_NAME'],
             'client_flags': [mysql.connector.ClientFlag.SSL],
-            'ssl_ca': FILE_PATH + '\DigiCertGlobalRootG2.crt.pem'
+            'ssl_ca': FILE_PATH + '\' + secrets['DB_CERT']
         }
     return config
 
