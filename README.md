@@ -1,6 +1,6 @@
 # business-finder
 
-#### Full-stack web application that creates interactive maps displaying local business data using the Leaflet, Nominatim, and Bing Maps Local Search API.
+#### Full-stack web application that generates interactive maps displaying local business data using the Leaflet, Nominatim, and Bing Maps Local Search API.
 
 <hr>
 
@@ -13,7 +13,7 @@ Plugins used:
 
 Running `npm install` installs both Node.js and Python dependencies.
 
-#### Nginx Config
+#### Nginx Server Config
 
 ```bash
 server {
